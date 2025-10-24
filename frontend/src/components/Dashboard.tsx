@@ -15,47 +15,47 @@ const Dashboard: React.FC = () => {
       const response = await statisticsAPI.get();
       setStats(response.data.data);
     } catch (error) {
-      console.error('Lỗi khi tải thống kê:', error);
+      console.error('Error loading statistics:', error);
     } finally {
       setLoading(false);
     }
   };
 
   if (loading) {
-    return <div className="loading">Đang tải...</div>;
+    return <div className="loading">Loading...</div>;
   }
 
   if (!stats) {
-    return <div className="alert alert-error">Không thể tải thống kê</div>;
+    return <div className="alert alert-error">Unable to load statistics</div>;
   }
 
   return (
     <div>
       <div className="card">
-        <h2>Thống Kê Tổng Quan</h2>
+        <h2>Overview Statistics</h2>
         <div className="stats-grid">
           <div className="stat-card primary">
-            <h3>Tổng Số Sách</h3>
+            <h3>Total Books</h3>
             <div className="value">{stats.totalBooks}</div>
           </div>
           <div className="stat-card success">
-            <h3>Sách Có Sẵn</h3>
+            <h3>Available Books</h3>
             <div className="value">{stats.availableBooks}</div>
           </div>
           <div className="stat-card warning">
-            <h3>Đang Mượn</h3>
+            <h3>Borrowed</h3>
             <div className="value">{stats.borrowedBooks}</div>
           </div>
           <div className="stat-card primary">
-            <h3>Người Dùng</h3>
+            <h3>Users</h3>
             <div className="value">{stats.totalUsers}</div>
           </div>
           <div className="stat-card success">
-            <h3>Phiếu Mượn Hoạt Động</h3>
+            <h3>Active Borrows</h3>
             <div className="value">{stats.activeBorrows}</div>
           </div>
           <div className="stat-card danger">
-            <h3>Quá Hạn</h3>
+            <h3>Overdue</h3>
             <div className="value">{stats.overdueBorrows}</div>
           </div>
         </div>

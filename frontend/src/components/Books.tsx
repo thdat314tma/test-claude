@@ -26,7 +26,7 @@ const Books: React.FC = () => {
       const response = await booksAPI.getAll();
       setBooks(response.data.data);
     } catch (error) {
-      console.error('Lỗi khi tải sách:', error);
+      console.error('Error loading books:', error);
     } finally {
       setLoading(false);
     }
@@ -36,7 +36,7 @@ const Books: React.FC = () => {
     e.preventDefault();
     try {
       await booksAPI.add(formData);
-      setMessage({ type: 'success', text: 'Thêm sách thành công!' });
+      setMessage({ type: 'success', text: 'Book added successfully!' });
       setShowForm(false);
       setFormData({
         title: '',
@@ -47,19 +47,19 @@ const Books: React.FC = () => {
       });
       loadBooks();
     } catch (error: any) {
-      setMessage({ type: 'error', text: error.response?.data?.error || 'Lỗi khi thêm sách' });
+      setMessage({ type: 'error', text: error.response?.data?.error || 'Error adding book' });
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (!window.confirm('Bạn có chắc muốn xóa sách này?')) return;
+    if (!window.confirm('Are you sure you want to delete this book?')) return;
 
     try {
       await booksAPI.delete(id);
-      setMessage({ type: 'success', text: 'Xóa sách thành công!' });
+      setMessage({ type: 'success', text: 'Book deleted successfully!' });
       loadBooks();
     } catch (error: any) {
-      setMessage({ type: 'error', text: error.response?.data?.error || 'Lỗi khi xóa sách' });
+      setMessage({ type: 'error', text: error.response?.data?.error || 'Error deleting book' });
     }
   };
 
@@ -73,7 +73,7 @@ const Books: React.FC = () => {
       const response = await booksAPI.searchByTitle(searchQuery);
       setBooks(response.data.data);
     } catch (error) {
-      console.error('Lỗi khi tìm kiếm:', error);
+      console.error('Error searching:', error);
     }
   };
 
@@ -86,17 +86,17 @@ const Books: React.FC = () => {
     };
 
     const labels = {
-      [BookStatus.AVAILABLE]: 'Có sẵn',
-      [BookStatus.BORROWED]: 'Đang mượn',
-      [BookStatus.MAINTENANCE]: 'Bảo trì',
-      [BookStatus.LOST]: 'Mất',
+      [BookStatus.AVAILABLE]: 'Available',
+      [BookStatus.BORROWED]: 'Borrowed',
+      [BookStatus.MAINTENANCE]: 'Maintenance',
+      [BookStatus.LOST]: 'Lost',
     };
 
     return <span className={`badge ${badges[status]}`}>{labels[status]}</span>;
   };
 
   if (loading) {
-    return <div className="loading">Đang tải...</div>;
+    return <div className="loading">Loading...</div>;
   }
 
   return (
@@ -110,9 +110,9 @@ const Books: React.FC = () => {
 
       <div className="card">
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-          <h2>Quản Lý Sách</h2>
+          <h2>Book Management</h2>
           <button className="btn btn-primary" onClick={() => setShowForm(!showForm)}>
-            {showForm ? 'Đóng' : '+ Thêm Sách'}
+            {showForm ? 'Close' : '+ Add Book'}
           </button>
         </div>
 
@@ -120,7 +120,7 @@ const Books: React.FC = () => {
           <form onSubmit={handleSubmit} style={{ marginBottom: '2rem', padding: '1.5rem', background: '#f8fafc', borderRadius: '8px' }}>
             <div className="form-row">
               <div className="form-group">
-                <label>Tiêu đề *</label>
+                <label>Title *</label>
                 <input
                   type="text"
                   required
@@ -129,7 +129,7 @@ const Books: React.FC = () => {
                 />
               </div>
               <div className="form-group">
-                <label>Tác giả *</label>
+                <label>Author *</label>
                 <input
                   type="text"
                   required
@@ -149,7 +149,7 @@ const Books: React.FC = () => {
                 />
               </div>
               <div className="form-group">
-                <label>Năm xuất bản *</label>
+                <label>Publish Year *</label>
                 <input
                   type="number"
                   required
@@ -158,7 +158,7 @@ const Books: React.FC = () => {
                 />
               </div>
               <div className="form-group">
-                <label>Thể loại *</label>
+                <label>Category *</label>
                 <input
                   type="text"
                   required
@@ -167,39 +167,39 @@ const Books: React.FC = () => {
                 />
               </div>
             </div>
-            <button type="submit" className="btn btn-primary">Thêm Sách</button>
+            <button type="submit" className="btn btn-primary">Add Book</button>
           </form>
         )}
 
         <div className="search-box">
           <input
             type="text"
-            placeholder="Tìm kiếm sách theo tiêu đề..."
+            placeholder="Search books by title..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
           />
-          <button className="btn btn-primary" onClick={handleSearch}>Tìm kiếm</button>
-          <button className="btn btn-secondary" onClick={() => { setSearchQuery(''); loadBooks(); }}>Làm mới</button>
+          <button className="btn btn-primary" onClick={handleSearch}>Search</button>
+          <button className="btn btn-secondary" onClick={() => { setSearchQuery(''); loadBooks(); }}>Refresh</button>
         </div>
 
         {books.length === 0 ? (
           <div className="empty-state">
-            <h3>Chưa có sách nào</h3>
-            <p>Hãy thêm sách đầu tiên của bạn</p>
+            <h3>No books yet</h3>
+            <p>Add your first book</p>
           </div>
         ) : (
           <table className="table">
             <thead>
               <tr>
                 <th>ID</th>
-                <th>Tiêu đề</th>
-                <th>Tác giả</th>
+                <th>Title</th>
+                <th>Author</th>
                 <th>ISBN</th>
-                <th>Năm XB</th>
-                <th>Thể loại</th>
-                <th>Trạng thái</th>
-                <th>Thao tác</th>
+                <th>Year</th>
+                <th>Category</th>
+                <th>Status</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -219,7 +219,7 @@ const Books: React.FC = () => {
                       onClick={() => handleDelete(book.id)}
                       disabled={book.status === BookStatus.BORROWED}
                     >
-                      Xóa
+                      Delete
                     </button>
                   </td>
                 </tr>

@@ -24,7 +24,7 @@ const Users: React.FC = () => {
       const response = await usersAPI.getAll();
       setUsers(response.data.data);
     } catch (error) {
-      console.error('Lỗi khi tải người dùng:', error);
+      console.error('Error loading users:', error);
     } finally {
       setLoading(false);
     }
@@ -34,7 +34,7 @@ const Users: React.FC = () => {
     e.preventDefault();
     try {
       await usersAPI.register(formData);
-      setMessage({ type: 'success', text: 'Đăng ký người dùng thành công!' });
+      setMessage({ type: 'success', text: 'User registered successfully!' });
       setShowForm(false);
       setFormData({
         name: '',
@@ -44,24 +44,24 @@ const Users: React.FC = () => {
       });
       loadUsers();
     } catch (error: any) {
-      setMessage({ type: 'error', text: error.response?.data?.error || 'Lỗi khi đăng ký người dùng' });
+      setMessage({ type: 'error', text: error.response?.data?.error || 'Error registering user' });
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (!window.confirm('Bạn có chắc muốn xóa người dùng này?')) return;
+    if (!window.confirm('Are you sure you want to delete this user?')) return;
 
     try {
       await usersAPI.delete(id);
-      setMessage({ type: 'success', text: 'Xóa người dùng thành công!' });
+      setMessage({ type: 'success', text: 'User deleted successfully!' });
       loadUsers();
     } catch (error: any) {
-      setMessage({ type: 'error', text: error.response?.data?.error || 'Lỗi khi xóa người dùng' });
+      setMessage({ type: 'error', text: error.response?.data?.error || 'Error deleting user' });
     }
   };
 
   if (loading) {
-    return <div className="loading">Đang tải...</div>;
+    return <div className="loading">Loading...</div>;
   }
 
   return (
@@ -75,9 +75,9 @@ const Users: React.FC = () => {
 
       <div className="card">
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-          <h2>Quản Lý Người Dùng</h2>
+          <h2>User Management</h2>
           <button className="btn btn-primary" onClick={() => setShowForm(!showForm)}>
-            {showForm ? 'Đóng' : '+ Đăng Ký Người Dùng'}
+            {showForm ? 'Close' : '+ Register User'}
           </button>
         </div>
 
@@ -85,7 +85,7 @@ const Users: React.FC = () => {
           <form onSubmit={handleSubmit} style={{ marginBottom: '2rem', padding: '1.5rem', background: '#f8fafc', borderRadius: '8px' }}>
             <div className="form-row">
               <div className="form-group">
-                <label>Họ tên *</label>
+                <label>Full Name *</label>
                 <input
                   type="text"
                   required
@@ -105,7 +105,7 @@ const Users: React.FC = () => {
             </div>
             <div className="form-row">
               <div className="form-group">
-                <label>Số điện thoại *</label>
+                <label>Phone *</label>
                 <input
                   type="tel"
                   required
@@ -114,7 +114,7 @@ const Users: React.FC = () => {
                 />
               </div>
               <div className="form-group">
-                <label>Địa chỉ *</label>
+                <label>Address *</label>
                 <input
                   type="text"
                   required
@@ -123,27 +123,27 @@ const Users: React.FC = () => {
                 />
               </div>
             </div>
-            <button type="submit" className="btn btn-primary">Đăng Ký</button>
+            <button type="submit" className="btn btn-primary">Register</button>
           </form>
         )}
 
         {users.length === 0 ? (
           <div className="empty-state">
-            <h3>Chưa có người dùng nào</h3>
-            <p>Hãy đăng ký người dùng đầu tiên</p>
+            <h3>No users yet</h3>
+            <p>Register your first user</p>
           </div>
         ) : (
           <table className="table">
             <thead>
               <tr>
                 <th>ID</th>
-                <th>Họ tên</th>
+                <th>Name</th>
                 <th>Email</th>
-                <th>Số điện thoại</th>
-                <th>Địa chỉ</th>
-                <th>Đang mượn</th>
-                <th>Giới hạn</th>
-                <th>Thao tác</th>
+                <th>Phone</th>
+                <th>Address</th>
+                <th>Borrowed</th>
+                <th>Limit</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -167,7 +167,7 @@ const Users: React.FC = () => {
                       onClick={() => handleDelete(user.id)}
                       disabled={user.borrowedBooksCount > 0}
                     >
-                      Xóa
+                      Delete
                     </button>
                   </td>
                 </tr>

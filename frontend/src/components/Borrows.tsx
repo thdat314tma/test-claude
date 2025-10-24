@@ -35,7 +35,7 @@ const Borrows: React.FC = () => {
       setBooks(booksRes.data.data);
       setUsers(usersRes.data.data);
     } catch (error) {
-      console.error('Lỗi khi tải dữ liệu:', error);
+      console.error('Error loading data:', error);
     } finally {
       setLoading(false);
     }
@@ -45,7 +45,7 @@ const Borrows: React.FC = () => {
     e.preventDefault();
     try {
       await borrowsAPI.borrow(formData);
-      setMessage({ type: 'success', text: 'Mượn sách thành công!' });
+      setMessage({ type: 'success', text: 'Book borrowed successfully!' });
       setShowForm(false);
       setFormData({
         userId: '',
@@ -54,19 +54,19 @@ const Borrows: React.FC = () => {
       });
       loadData();
     } catch (error: any) {
-      setMessage({ type: 'error', text: error.response?.data?.error || 'Lỗi khi mượn sách' });
+      setMessage({ type: 'error', text: error.response?.data?.error || 'Error borrowing book' });
     }
   };
 
   const handleReturn = async (id: string) => {
-    if (!window.confirm('Xác nhận trả sách?')) return;
+    if (!window.confirm('Confirm book return?')) return;
 
     try {
       await borrowsAPI.return(id);
-      setMessage({ type: 'success', text: 'Trả sách thành công!' });
+      setMessage({ type: 'success', text: 'Book returned successfully!' });
       loadData();
     } catch (error: any) {
-      setMessage({ type: 'error', text: error.response?.data?.error || 'Lỗi khi trả sách' });
+      setMessage({ type: 'error', text: error.response?.data?.error || 'Error returning book' });
     }
   };
 
@@ -78,23 +78,16 @@ const Borrows: React.FC = () => {
     };
 
     const labels = {
-      [BorrowStatus.ACTIVE]: 'Đang mượn',
-      [BorrowStatus.RETURNED]: 'Đã trả',
-      [BorrowStatus.OVERDUE]: 'Quá hạn',
+      [BorrowStatus.ACTIVE]: 'Active',
+      [BorrowStatus.RETURNED]: 'Returned',
+      [BorrowStatus.OVERDUE]: 'Overdue',
     };
 
     return <span className={`badge ${badges[status]}`}>{labels[status]}</span>;
   };
 
   const formatDate = (date: Date) => {
-    return new Date(date).toLocaleDateString('vi-VN');
-  };
-
-  const getBookTitle = (bookId: string) => {
-    // Tìm trong danh sách borrows hiện tại
-    const allBooks = [...books];
-    // Có thể cần load thêm thông tin sách từ API
-    return bookId;
+    return new Date(date).toLocaleDateString('en-US');
   };
 
   const getUserName = (userId: string) => {
@@ -103,7 +96,7 @@ const Borrows: React.FC = () => {
   };
 
   if (loading) {
-    return <div className="loading">Đang tải...</div>;
+    return <div className="loading">Loading...</div>;
   }
 
   return (
@@ -117,9 +110,9 @@ const Borrows: React.FC = () => {
 
       <div className="card">
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-          <h2>Quản Lý Mượn/Trả Sách</h2>
+          <h2>Borrow/Return Management</h2>
           <button className="btn btn-primary" onClick={() => setShowForm(!showForm)}>
-            {showForm ? 'Đóng' : '+ Mượn Sách'}
+            {showForm ? 'Close' : '+ Borrow Book'}
           </button>
         </div>
 
@@ -127,28 +120,28 @@ const Borrows: React.FC = () => {
           <form onSubmit={handleSubmit} style={{ marginBottom: '2rem', padding: '1.5rem', background: '#f8fafc', borderRadius: '8px' }}>
             <div className="form-row">
               <div className="form-group">
-                <label>Người mượn *</label>
+                <label>Borrower *</label>
                 <select
                   required
                   value={formData.userId}
                   onChange={(e) => setFormData({ ...formData, userId: e.target.value })}
                 >
-                  <option value="">-- Chọn người dùng --</option>
+                  <option value="">-- Select User --</option>
                   {users.map((user) => (
                     <option key={user.id} value={user.id}>
-                      {user.name} ({user.id}) - Đang mượn: {user.borrowedBooksCount}/{user.maxBorrowLimit}
+                      {user.name} ({user.id}) - Borrowed: {user.borrowedBooksCount}/{user.maxBorrowLimit}
                     </option>
                   ))}
                 </select>
               </div>
               <div className="form-group">
-                <label>Sách *</label>
+                <label>Book *</label>
                 <select
                   required
                   value={formData.bookId}
                   onChange={(e) => setFormData({ ...formData, bookId: e.target.value })}
                 >
-                  <option value="">-- Chọn sách --</option>
+                  <option value="">-- Select Book --</option>
                   {books.map((book) => (
                     <option key={book.id} value={book.id}>
                       {book.title} - {book.author} ({book.id})
@@ -157,7 +150,7 @@ const Borrows: React.FC = () => {
                 </select>
               </div>
               <div className="form-group">
-                <label>Số ngày mượn *</label>
+                <label>Borrow Days *</label>
                 <input
                   type="number"
                   required
@@ -168,7 +161,7 @@ const Borrows: React.FC = () => {
                 />
               </div>
             </div>
-            <button type="submit" className="btn btn-primary">Cho Mượn</button>
+            <button type="submit" className="btn btn-primary">Borrow</button>
           </form>
         )}
 
@@ -177,39 +170,39 @@ const Borrows: React.FC = () => {
             className={`btn ${filter === 'all' ? 'btn-primary' : 'btn-secondary'}`}
             onClick={() => setFilter('all')}
           >
-            Tất cả
+            All
           </button>
           <button
             className={`btn ${filter === 'active' ? 'btn-primary' : 'btn-secondary'}`}
             onClick={() => setFilter('active')}
           >
-            Đang hoạt động
+            Active
           </button>
           <button
             className={`btn ${filter === 'overdue' ? 'btn-primary' : 'btn-secondary'}`}
             onClick={() => setFilter('overdue')}
           >
-            Quá hạn
+            Overdue
           </button>
         </div>
 
         {borrows.length === 0 ? (
           <div className="empty-state">
-            <h3>Chưa có phiếu mượn nào</h3>
-            <p>Hãy tạo phiếu mượn đầu tiên</p>
+            <h3>No borrow records yet</h3>
+            <p>Create your first borrow record</p>
           </div>
         ) : (
           <table className="table">
             <thead>
               <tr>
                 <th>ID</th>
-                <th>Sách</th>
-                <th>Người mượn</th>
-                <th>Ngày mượn</th>
-                <th>Hạn trả</th>
-                <th>Ngày trả</th>
-                <th>Trạng thái</th>
-                <th>Thao tác</th>
+                <th>Book</th>
+                <th>Borrower</th>
+                <th>Borrow Date</th>
+                <th>Due Date</th>
+                <th>Return Date</th>
+                <th>Status</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -229,7 +222,7 @@ const Borrows: React.FC = () => {
                         style={{ padding: '0.5rem 1rem' }}
                         onClick={() => handleReturn(borrow.id)}
                       >
-                        Trả sách
+                        Return
                       </button>
                     )}
                   </td>

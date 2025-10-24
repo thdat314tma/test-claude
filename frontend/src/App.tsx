@@ -28,8 +28,8 @@ const App: React.FC = () => {
   return (
     <div className="app">
       <header className="header">
-        <h1>📚 Hệ Thống Quản Lý Thư Viện</h1>
-        <p>Quản lý sách, người dùng và phiếu mượn một cách hiệu quả</p>
+        <h1>📚 Library Management System</h1>
+        <p>Efficiently manage books, users, and borrowing records</p>
       </header>
 
       <div className="container">
@@ -38,25 +38,25 @@ const App: React.FC = () => {
             className={`tab ${activeTab === 'dashboard' ? 'active' : ''}`}
             onClick={() => setActiveTab('dashboard')}
           >
-            Tổng Quan
+            Dashboard
           </button>
           <button
             className={`tab ${activeTab === 'books' ? 'active' : ''}`}
             onClick={() => setActiveTab('books')}
           >
-            Quản Lý Sách
+            Books
           </button>
           <button
             className={`tab ${activeTab === 'users' ? 'active' : ''}`}
             onClick={() => setActiveTab('users')}
           >
-            Người Dùng
+            Users
           </button>
           <button
             className={`tab ${activeTab === 'borrows' ? 'active' : ''}`}
             onClick={() => setActiveTab('borrows')}
           >
-            Mượn/Trả Sách
+            Borrow/Return
           </button>
         </div>
 

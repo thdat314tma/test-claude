@@ -37,7 +37,7 @@ app.use('/api', routes);
 app.use((req: Request, res: Response) => {
   res.status(404).json({
     success: false,
-    error: 'Endpoint không tồn tại'
+    error: 'Endpoint not found'
   });
 });
 
@@ -45,14 +45,14 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   console.error('Error:', err);
   res.status(500).json({
     success: false,
-    error: 'Lỗi server nội bộ'
+    error: 'Internal server error'
   });
 });
 
 // ============ START SERVER ============
 app.listen(PORT, () => {
   console.log(`\n========================================`);
-  console.log(`🚀 Server đang chạy tại http://localhost:${PORT}`);
+  console.log(`🚀 Server running at http://localhost:${PORT}`);
   console.log(`📚 API Documentation: http://localhost:${PORT}/api`);
   console.log(`========================================\n`);
 });

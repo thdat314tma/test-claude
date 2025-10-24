@@ -1,13 +1,13 @@
 import { Request, Response } from 'express';
 import { LibraryService } from '../../../src/services/LibraryService';
 
-// Singleton instance của LibraryService
+// Singleton instance of LibraryService
 const libraryService = new LibraryService();
 
 export class LibraryController {
   // ============ BOOKS API ============
 
-  // GET /api/books - Lấy tất cả sách
+  // GET /api/books - Get all books
   static getAllBooks(req: Request, res: Response) {
     try {
       const books = libraryService.getAllBooks();
@@ -17,7 +17,7 @@ export class LibraryController {
     }
   }
 
-  // GET /api/books/available - Lấy sách có sẵn
+  // GET /api/books/available - Get available books
   static getAvailableBooks(req: Request, res: Response) {
     try {
       const books = libraryService.getAvailableBooks();
@@ -27,12 +27,12 @@ export class LibraryController {
     }
   }
 
-  // GET /api/books/:id - Lấy sách theo ID
+  // GET /api/books/:id - Get book by ID
   static getBookById(req: Request, res: Response) {
     try {
       const book = libraryService.getBook(req.params.id);
       if (!book) {
-        return res.status(404).json({ success: false, error: 'Không tìm thấy sách' });
+        return res.status(404).json({ success: false, error: 'Book not found' });
       }
       res.json({ success: true, data: book });
     } catch (error: any) {
@@ -40,7 +40,7 @@ export class LibraryController {
     }
   }
 
-  // POST /api/books - Thêm sách mới
+  // POST /api/books - Add new book
   static addBook(req: Request, res: Response) {
     try {
       const { title, author, isbn, publishYear, category } = req.body;
@@ -48,7 +48,7 @@ export class LibraryController {
       if (!title || !author || !isbn || !publishYear || !category) {
         return res.status(400).json({
           success: false,
-          error: 'Thiếu thông tin bắt buộc'
+          error: 'Missing required fields'
         });
       }
 
@@ -59,7 +59,7 @@ export class LibraryController {
     }
   }
 
-  // DELETE /api/books/:id - Xóa sách
+  // DELETE /api/books/:id - Delete book
   static deleteBook(req: Request, res: Response) {
     try {
       const result = libraryService.removeBook(req.params.id);
@@ -69,7 +69,7 @@ export class LibraryController {
     }
   }
 
-  // GET /api/books/search/title/:query - Tìm sách theo tiêu đề
+  // GET /api/books/search/title/:query - Search books by title
   static searchBooksByTitle(req: Request, res: Response) {
     try {
       const books = libraryService.searchBooksByTitle(req.params.query);
@@ -79,7 +79,7 @@ export class LibraryController {
     }
   }
 
-  // GET /api/books/search/author/:query - Tìm sách theo tác giả
+  // GET /api/books/search/author/:query - Search books by author
   static searchBooksByAuthor(req: Request, res: Response) {
     try {
       const books = libraryService.searchBooksByAuthor(req.params.query);
@@ -89,7 +89,7 @@ export class LibraryController {
     }
   }
 
-  // GET /api/books/search/category/:query - Tìm sách theo thể loại
+  // GET /api/books/search/category/:query - Search books by category
   static searchBooksByCategory(req: Request, res: Response) {
     try {
       const books = libraryService.searchBooksByCategory(req.params.query);
@@ -101,7 +101,7 @@ export class LibraryController {
 
   // ============ USERS API ============
 
-  // GET /api/users - Lấy tất cả người dùng
+  // GET /api/users - Get all users
   static getAllUsers(req: Request, res: Response) {
     try {
       const users = libraryService.getAllUsers();
@@ -111,12 +111,12 @@ export class LibraryController {
     }
   }
 
-  // GET /api/users/:id - Lấy người dùng theo ID
+  // GET /api/users/:id - Get user by ID
   static getUserById(req: Request, res: Response) {
     try {
       const user = libraryService.getUser(req.params.id);
       if (!user) {
-        return res.status(404).json({ success: false, error: 'Không tìm thấy người dùng' });
+        return res.status(404).json({ success: false, error: 'User not found' });
       }
       res.json({ success: true, data: user });
     } catch (error: any) {
@@ -124,7 +124,7 @@ export class LibraryController {
     }
   }
 
-  // POST /api/users - Đăng ký người dùng mới
+  // POST /api/users - Register new user
   static registerUser(req: Request, res: Response) {
     try {
       const { name, email, phone, address } = req.body;
@@ -132,7 +132,7 @@ export class LibraryController {
       if (!name || !email || !phone || !address) {
         return res.status(400).json({
           success: false,
-          error: 'Thiếu thông tin bắt buộc'
+          error: 'Missing required fields'
         });
       }
 
@@ -143,7 +143,7 @@ export class LibraryController {
     }
   }
 
-  // DELETE /api/users/:id - Xóa người dùng
+  // DELETE /api/users/:id - Delete user
   static deleteUser(req: Request, res: Response) {
     try {
       const result = libraryService.removeUser(req.params.id);
@@ -153,7 +153,7 @@ export class LibraryController {
     }
   }
 
-  // GET /api/users/:id/borrows - Lấy phiếu mượn của người dùng
+  // GET /api/users/:id/borrows - Get user's borrow records
   static getUserBorrows(req: Request, res: Response) {
     try {
       const records = libraryService.getUserBorrowRecords(req.params.id);
@@ -163,7 +163,7 @@ export class LibraryController {
     }
   }
 
-  // GET /api/users/:id/active-borrows - Lấy phiếu mượn đang hoạt động
+  // GET /api/users/:id/active-borrows - Get user's active borrow records
   static getUserActiveBorrows(req: Request, res: Response) {
     try {
       const records = libraryService.getUserActiveBorrowRecords(req.params.id);
@@ -175,7 +175,7 @@ export class LibraryController {
 
   // ============ BORROW/RETURN API ============
 
-  // POST /api/borrows - Mượn sách
+  // POST /api/borrows - Borrow book
   static borrowBook(req: Request, res: Response) {
     try {
       const { userId, bookId, borrowDays } = req.body;
@@ -183,7 +183,7 @@ export class LibraryController {
       if (!userId || !bookId) {
         return res.status(400).json({
           success: false,
-          error: 'Thiếu userId hoặc bookId'
+          error: 'Missing userId or bookId'
         });
       }
 
@@ -194,7 +194,7 @@ export class LibraryController {
     }
   }
 
-  // POST /api/borrows/:id/return - Trả sách
+  // POST /api/borrows/:id/return - Return book
   static returnBook(req: Request, res: Response) {
     try {
       const record = libraryService.returnBook(req.params.id);
@@ -204,7 +204,7 @@ export class LibraryController {
     }
   }
 
-  // GET /api/borrows - Lấy tất cả phiếu mượn
+  // GET /api/borrows - Get all borrow records
   static getAllBorrows(req: Request, res: Response) {
     try {
       const records = libraryService.getAllBorrowRecords();
@@ -214,7 +214,7 @@ export class LibraryController {
     }
   }
 
-  // GET /api/borrows/active - Lấy phiếu mượn đang hoạt động
+  // GET /api/borrows/active - Get active borrow records
   static getActiveBorrows(req: Request, res: Response) {
     try {
       const records = libraryService.getActiveBorrowRecords();
@@ -224,7 +224,7 @@ export class LibraryController {
     }
   }
 
-  // GET /api/borrows/overdue - Lấy phiếu mượn quá hạn
+  // GET /api/borrows/overdue - Get overdue borrow records
   static getOverdueBorrows(req: Request, res: Response) {
     try {
       const records = libraryService.getOverdueBorrowRecords();
@@ -236,7 +236,7 @@ export class LibraryController {
 
   // ============ STATISTICS API ============
 
-  // GET /api/statistics - Lấy thống kê
+  // GET /api/statistics - Get statistics
   static getStatistics(req: Request, res: Response) {
     try {
       const stats = libraryService.getStatistics();
